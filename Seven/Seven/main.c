@@ -1,0 +1,24 @@
+#define F_CPU 1000000UL
+#include<avr/io.h>
+#include<util/delay.h>
+
+void main()
+{
+	DDRA=DDRB=0b11111111;
+	char a[]={0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,0x80,0x90};
+	//char c[]={0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x6F,0x7F};
+	while(1)
+	{
+		
+	
+	for(int i=0;i<10;i++)
+	{
+      PORTA=a[i];
+	  for(int j=0;j<10;j++)
+	  {
+		PORTB=a[j];
+		_delay_ms(1000);
+	    }
+	}
+}
+	}

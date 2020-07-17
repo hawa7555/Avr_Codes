@@ -1,0 +1,150 @@
+
+DDUC.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000008a  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  000000de  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  000000de  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000110  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000020  00000000  00000000  0000014c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   000005a8  00000000  00000000  0000016c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000520  00000000  00000000  00000714  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   00000254  00000000  00000000  00000c34  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000024  00000000  00000000  00000e88  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000002fb  00000000  00000000  00000eac  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    0000006c  00000000  00000000  000011a7  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000028  00000000  00000000  00001213  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	19 c0       	rjmp	.+50     	; 0x36 <__bad_interrupt>
+   4:	18 c0       	rjmp	.+48     	; 0x36 <__bad_interrupt>
+   6:	17 c0       	rjmp	.+46     	; 0x36 <__bad_interrupt>
+   8:	16 c0       	rjmp	.+44     	; 0x36 <__bad_interrupt>
+   a:	15 c0       	rjmp	.+42     	; 0x36 <__bad_interrupt>
+   c:	14 c0       	rjmp	.+40     	; 0x36 <__bad_interrupt>
+   e:	13 c0       	rjmp	.+38     	; 0x36 <__bad_interrupt>
+  10:	12 c0       	rjmp	.+36     	; 0x36 <__bad_interrupt>
+  12:	11 c0       	rjmp	.+34     	; 0x36 <__bad_interrupt>
+  14:	10 c0       	rjmp	.+32     	; 0x36 <__bad_interrupt>
+  16:	0f c0       	rjmp	.+30     	; 0x36 <__bad_interrupt>
+  18:	0e c0       	rjmp	.+28     	; 0x36 <__bad_interrupt>
+  1a:	0d c0       	rjmp	.+26     	; 0x36 <__bad_interrupt>
+  1c:	0c c0       	rjmp	.+24     	; 0x36 <__bad_interrupt>
+  1e:	0b c0       	rjmp	.+22     	; 0x36 <__bad_interrupt>
+  20:	0a c0       	rjmp	.+20     	; 0x36 <__bad_interrupt>
+  22:	09 c0       	rjmp	.+18     	; 0x36 <__bad_interrupt>
+  24:	08 c0       	rjmp	.+16     	; 0x36 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+  32:	02 d0       	rcall	.+4      	; 0x38 <main>
+  34:	28 c0       	rjmp	.+80     	; 0x86 <_exit>
+
+00000036 <__bad_interrupt>:
+  36:	e4 cf       	rjmp	.-56     	; 0x0 <__vectors>
+
+00000038 <main>:
+#include <avr/io.h>
+#include <util/delay.h>
+#define F_CPU 8000000UL
+int main(void)
+{
+	DDRB |= (31<<0);
+  38:	87 b3       	in	r24, 0x17	; 23
+  3a:	8f 61       	ori	r24, 0x1F	; 31
+  3c:	87 bb       	out	0x17, r24	; 23
+    /* Replace with your application code */
+    while (1) {
+		PORTB &= ~(31<<0);
+		
+		for(int i=0; i<4; i++) {
+		PORTB |= (1<<i);
+  3e:	61 e0       	ldi	r22, 0x01	; 1
+  40:	70 e0       	ldi	r23, 0x00	; 0
+{
+	DDRB |= (31<<0);
+	//PORTB &= ~(15<<0);
+    /* Replace with your application code */
+    while (1) {
+		PORTB &= ~(31<<0);
+  42:	88 b3       	in	r24, 0x18	; 24
+  44:	80 7e       	andi	r24, 0xE0	; 224
+  46:	88 bb       	out	0x18, r24	; 24
+		
+		for(int i=0; i<4; i++) {
+  48:	80 e0       	ldi	r24, 0x00	; 0
+  4a:	90 e0       	ldi	r25, 0x00	; 0
+		PORTB |= (1<<i);
+  4c:	48 b3       	in	r20, 0x18	; 24
+  4e:	9b 01       	movw	r18, r22
+  50:	08 2e       	mov	r0, r24
+  52:	02 c0       	rjmp	.+4      	; 0x58 <__SREG__+0x19>
+  54:	22 0f       	add	r18, r18
+  56:	33 1f       	adc	r19, r19
+  58:	0a 94       	dec	r0
+  5a:	e2 f7       	brpl	.-8      	; 0x54 <__SREG__+0x15>
+  5c:	24 2b       	or	r18, r20
+  5e:	28 bb       	out	0x18, r18	; 24
+		if(!(i % 2)) {
+  60:	80 fd       	sbrc	r24, 0
+  62:	02 c0       	rjmp	.+4      	; 0x68 <__SREG__+0x29>
+			PORTB |= (1<<4);
+  64:	c4 9a       	sbi	0x18, 4	; 24
+  66:	01 c0       	rjmp	.+2      	; 0x6a <__SREG__+0x2b>
+		}
+		else {
+			PORTB &= ~(1<<4); 
+  68:	c4 98       	cbi	0x18, 4	; 24
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  6a:	2f e7       	ldi	r18, 0x7F	; 127
+  6c:	34 e8       	ldi	r19, 0x84	; 132
+  6e:	4e e1       	ldi	r20, 0x1E	; 30
+  70:	21 50       	subi	r18, 0x01	; 1
+  72:	30 40       	sbci	r19, 0x00	; 0
+  74:	40 40       	sbci	r20, 0x00	; 0
+  76:	e1 f7       	brne	.-8      	; 0x70 <__SREG__+0x31>
+  78:	00 c0       	rjmp	.+0      	; 0x7a <__SREG__+0x3b>
+  7a:	00 00       	nop
+	//PORTB &= ~(15<<0);
+    /* Replace with your application code */
+    while (1) {
+		PORTB &= ~(31<<0);
+		
+		for(int i=0; i<4; i++) {
+  7c:	01 96       	adiw	r24, 0x01	; 1
+  7e:	84 30       	cpi	r24, 0x04	; 4
+  80:	91 05       	cpc	r25, r1
+  82:	21 f7       	brne	.-56     	; 0x4c <__SREG__+0xd>
+  84:	de cf       	rjmp	.-68     	; 0x42 <__SREG__+0x3>
+
+00000086 <_exit>:
+  86:	f8 94       	cli
+
+00000088 <__stop_program>:
+  88:	ff cf       	rjmp	.-2      	; 0x88 <__stop_program>
