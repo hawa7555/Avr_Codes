@@ -1,0 +1,155 @@
+
+ha.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000ca  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .debug_aranges 00000020  00000000  00000000  0000011e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  2 .debug_pubnames 0000001b  00000000  00000000  0000013e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_info   0000007f  00000000  00000000  00000159  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_abbrev 0000004c  00000000  00000000  000001d8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_line   000000cc  00000000  00000000  00000224  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_frame  00000020  00000000  00000000  000002f0  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_str    0000008b  00000000  00000000  00000310  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d4 e0       	ldi	r29, 0x04	; 4
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 36 00 	call	0x6c	; 0x6c <main>
+  64:	0c 94 63 00 	jmp	0xc6	; 0xc6 <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <main>:
+#define F_CPU 8000000UL
+#include<avr/io.h>
+#include<util/delay.h>
+int main()
+{
+  DDRA=DDRA &~ 0x0F;
+  6c:	8a b3       	in	r24, 0x1a	; 26
+  6e:	80 7f       	andi	r24, 0xF0	; 240
+  70:	8a bb       	out	0x1a, r24	; 26
+  DDRC=DDRC | (0x0F<<2);
+  72:	84 b3       	in	r24, 0x14	; 20
+  74:	8c 63       	ori	r24, 0x3C	; 60
+  76:	84 bb       	out	0x14, r24	; 20
+	  {
+	   case 1: PORTC=0b00000100; break;//PC2 BULB
+	   case 2: PORTC=0b00001000; break;//PC3 TV
+	   case 3: PORTC=0b00010000; break;//PC4 AC
+	   case 4: PORTC=0b00100000; break;//PC5 FAN
+	   case 5: PORTC=0b00111100; break;// All On
+  78:	6c e3       	ldi	r22, 0x3C	; 60
+	  switch(x)
+	  {
+	   case 1: PORTC=0b00000100; break;//PC2 BULB
+	   case 2: PORTC=0b00001000; break;//PC3 TV
+	   case 3: PORTC=0b00010000; break;//PC4 AC
+	   case 4: PORTC=0b00100000; break;//PC5 FAN
+  7a:	50 e2       	ldi	r21, 0x20	; 32
+	{
+	  x=PINA;
+	  x=x & 0x0F;
+	  switch(x)
+	  {
+	   case 1: PORTC=0b00000100; break;//PC2 BULB
+  7c:	44 e0       	ldi	r20, 0x04	; 4
+	   case 2: PORTC=0b00001000; break;//PC3 TV
+  7e:	38 e0       	ldi	r19, 0x08	; 8
+	   case 3: PORTC=0b00010000; break;//PC4 AC
+  80:	20 e1       	ldi	r18, 0x10	; 16
+  DDRA=DDRA &~ 0x0F;
+  DDRC=DDRC | (0x0F<<2);
+  int x;
+  while(1)
+	{
+	  x=PINA;
+  82:	89 b3       	in	r24, 0x19	; 25
+  84:	90 e0       	ldi	r25, 0x00	; 0
+	  x=x & 0x0F;
+	  switch(x)
+  86:	8f 70       	andi	r24, 0x0F	; 15
+  88:	90 70       	andi	r25, 0x00	; 0
+  8a:	83 30       	cpi	r24, 0x03	; 3
+  8c:	91 05       	cpc	r25, r1
+  8e:	99 f0       	breq	.+38     	; 0xb6 <main+0x4a>
+  90:	84 30       	cpi	r24, 0x04	; 4
+  92:	91 05       	cpc	r25, r1
+  94:	34 f4       	brge	.+12     	; 0xa2 <main+0x36>
+  96:	81 30       	cpi	r24, 0x01	; 1
+  98:	91 05       	cpc	r25, r1
+  9a:	49 f0       	breq	.+18     	; 0xae <main+0x42>
+  9c:	02 97       	sbiw	r24, 0x02	; 2
+  9e:	89 f4       	brne	.+34     	; 0xc2 <main+0x56>
+  a0:	08 c0       	rjmp	.+16     	; 0xb2 <main+0x46>
+  a2:	85 30       	cpi	r24, 0x05	; 5
+  a4:	91 05       	cpc	r25, r1
+  a6:	59 f0       	breq	.+22     	; 0xbe <main+0x52>
+  a8:	05 97       	sbiw	r24, 0x05	; 5
+  aa:	3c f0       	brlt	.+14     	; 0xba <main+0x4e>
+  ac:	0a c0       	rjmp	.+20     	; 0xc2 <main+0x56>
+	  {
+	   case 1: PORTC=0b00000100; break;//PC2 BULB
+  ae:	45 bb       	out	0x15, r20	; 21
+  b0:	e8 cf       	rjmp	.-48     	; 0x82 <main+0x16>
+	   case 2: PORTC=0b00001000; break;//PC3 TV
+  b2:	35 bb       	out	0x15, r19	; 21
+  b4:	e6 cf       	rjmp	.-52     	; 0x82 <main+0x16>
+	   case 3: PORTC=0b00010000; break;//PC4 AC
+  b6:	25 bb       	out	0x15, r18	; 21
+  b8:	e4 cf       	rjmp	.-56     	; 0x82 <main+0x16>
+	   case 4: PORTC=0b00100000; break;//PC5 FAN
+  ba:	55 bb       	out	0x15, r21	; 21
+  bc:	e2 cf       	rjmp	.-60     	; 0x82 <main+0x16>
+	   case 5: PORTC=0b00111100; break;// All On
+  be:	65 bb       	out	0x15, r22	; 21
+  c0:	e0 cf       	rjmp	.-64     	; 0x82 <main+0x16>
+	   case 6: PORTC=0b00000000; break;// All OFF
+	   default: PORTC=0b00000000;		//All OFF
+  c2:	15 ba       	out	0x15, r1	; 21
+  c4:	de cf       	rjmp	.-68     	; 0x82 <main+0x16>
+
+000000c6 <_exit>:
+  c6:	f8 94       	cli
+
+000000c8 <__stop_program>:
+  c8:	ff cf       	rjmp	.-2      	; 0xc8 <__stop_program>

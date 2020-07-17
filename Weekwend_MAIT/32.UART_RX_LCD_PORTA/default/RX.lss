@@ -1,0 +1,331 @@
+
+RX.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000148  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .debug_aranges 00000020  00000000  00000000  0000019c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  2 .debug_pubnames 00000097  00000000  00000000  000001bc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_info   00000352  00000000  00000000  00000253  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_abbrev 0000015d  00000000  00000000  000005a5  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_line   00000301  00000000  00000000  00000702  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_frame  00000090  00000000  00000000  00000a04  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_str    00000135  00000000  00000000  00000a94  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_loc    00000046  00000000  00000000  00000bc9  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d4 e0       	ldi	r29, 0x04	; 4
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 85 00 	call	0x10a	; 0x10a <main>
+  64:	0c 94 a2 00 	jmp	0x144	; 0x144 <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <uart_init>:
+ while( (UCSRA &(1<<RXC))==0);
+ lcd_data(UDR);
+}
+void uart_init()
+{
+ UBRRL=0x33;//Fosc=8Mhz,BR=9600
+  6c:	83 e3       	ldi	r24, 0x33	; 51
+  6e:	89 b9       	out	0x09, r24	; 9
+ UCSRB=UCSRB|(1<<RXEN);
+  70:	54 9a       	sbi	0x0a, 4	; 10
+ UCSRC=UCSRC|(1<<URSEL)|(1<<UCSZ0)|(1<<UCSZ1);
+  72:	80 b5       	in	r24, 0x20	; 32
+  74:	86 68       	ori	r24, 0x86	; 134
+  76:	80 bd       	out	0x20, r24	; 32
+
+}
+  78:	08 95       	ret
+
+0000007a <lcd_command>:
+	lcd_command(0x0E);
+
+}
+void lcd_command(char x)
+{
+ PORTA=(x&0xf0);  //upper 4 bit
+  7a:	28 2f       	mov	r18, r24
+  7c:	20 7f       	andi	r18, 0xF0	; 240
+  7e:	2b bb       	out	0x1b, r18	; 27
+ _delay_ms(1);
+}
+
+void lcd_command_enable_to_write()
+{
+ PORTA=PORTA&~(1<<0);//RS=0;
+  80:	d8 98       	cbi	0x1b, 0	; 27
+ PORTA=PORTA&~(1<<1);//RW=0;
+  82:	d9 98       	cbi	0x1b, 1	; 27
+ PORTA=PORTA |(1<<2);//EN=1;
+  84:	da 9a       	sbi	0x1b, 2	; 27
+ PORTA=PORTA&~(1<<2);//EN=0;
+  86:	da 98       	cbi	0x1b, 2	; 27
+    milliseconds can be achieved.
+ */
+void
+_delay_loop_2(uint16_t __count)
+{
+	__asm__ volatile (
+  88:	20 ed       	ldi	r18, 0xD0	; 208
+  8a:	37 e0       	ldi	r19, 0x07	; 7
+  8c:	f9 01       	movw	r30, r18
+  8e:	31 97       	sbiw	r30, 0x01	; 1
+  90:	f1 f7       	brne	.-4      	; 0x8e <lcd_command+0x14>
+}
+void lcd_command(char x)
+{
+ PORTA=(x&0xf0);  //upper 4 bit
+ lcd_command_enable_to_write();
+ PORTA=((x<<4)&0xf0); //lower 4 bit
+  92:	90 e0       	ldi	r25, 0x00	; 0
+  94:	44 e0       	ldi	r20, 0x04	; 4
+  96:	88 0f       	add	r24, r24
+  98:	99 1f       	adc	r25, r25
+  9a:	4a 95       	dec	r20
+  9c:	e1 f7       	brne	.-8      	; 0x96 <lcd_command+0x1c>
+  9e:	8b bb       	out	0x1b, r24	; 27
+ _delay_ms(1);
+}
+
+void lcd_command_enable_to_write()
+{
+ PORTA=PORTA&~(1<<0);//RS=0;
+  a0:	d8 98       	cbi	0x1b, 0	; 27
+ PORTA=PORTA&~(1<<1);//RW=0;
+  a2:	d9 98       	cbi	0x1b, 1	; 27
+ PORTA=PORTA |(1<<2);//EN=1;
+  a4:	da 9a       	sbi	0x1b, 2	; 27
+ PORTA=PORTA&~(1<<2);//EN=0;
+  a6:	da 98       	cbi	0x1b, 2	; 27
+  a8:	c9 01       	movw	r24, r18
+  aa:	01 97       	sbiw	r24, 0x01	; 1
+  ac:	f1 f7       	brne	.-4      	; 0xaa <lcd_command+0x30>
+{
+ PORTA=(x&0xf0);  //upper 4 bit
+ lcd_command_enable_to_write();
+ PORTA=((x<<4)&0xf0); //lower 4 bit
+ lcd_command_enable_to_write();
+}
+  ae:	08 95       	ret
+
+000000b0 <lcd_init>:
+
+}
+
+void lcd_init()
+{
+    DDRA=0xff;
+  b0:	8f ef       	ldi	r24, 0xFF	; 255
+  b2:	8a bb       	out	0x1a, r24	; 26
+	lcd_command(0x02);
+  b4:	82 e0       	ldi	r24, 0x02	; 2
+  b6:	0e 94 3d 00 	call	0x7a	; 0x7a <lcd_command>
+    lcd_command(0x28);
+  ba:	88 e2       	ldi	r24, 0x28	; 40
+  bc:	0e 94 3d 00 	call	0x7a	; 0x7a <lcd_command>
+	lcd_command(0x0E);
+  c0:	8e e0       	ldi	r24, 0x0E	; 14
+  c2:	0e 94 3d 00 	call	0x7a	; 0x7a <lcd_command>
+
+}
+  c6:	08 95       	ret
+
+000000c8 <lcd_data>:
+ PORTA=((x<<4)&0xf0); //lower 4 bit
+ lcd_command_enable_to_write();
+}
+void lcd_data(char x)
+{
+ PORTA=(x&0xf0);  //upper 4 bit
+  c8:	28 2f       	mov	r18, r24
+  ca:	20 7f       	andi	r18, 0xF0	; 240
+  cc:	2b bb       	out	0x1b, r18	; 27
+ PORTA=((x<<4)&0xf0); //lower 4 bit
+ lcd_data_enable_to_write();
+}
+void lcd_data_enable_to_write()
+{
+ PORTA=PORTA |(1<<0);//RS=0;
+  ce:	d8 9a       	sbi	0x1b, 0	; 27
+ PORTA=PORTA&~(1<<1);//RW=0;
+  d0:	d9 98       	cbi	0x1b, 1	; 27
+ PORTA=PORTA |(1<<2);//EN=1;
+  d2:	da 9a       	sbi	0x1b, 2	; 27
+ PORTA=PORTA&~(1<<2);//EN=0;
+  d4:	da 98       	cbi	0x1b, 2	; 27
+  d6:	20 ed       	ldi	r18, 0xD0	; 208
+  d8:	37 e0       	ldi	r19, 0x07	; 7
+  da:	f9 01       	movw	r30, r18
+  dc:	31 97       	sbiw	r30, 0x01	; 1
+  de:	f1 f7       	brne	.-4      	; 0xdc <lcd_data+0x14>
+}
+void lcd_data(char x)
+{
+ PORTA=(x&0xf0);  //upper 4 bit
+ lcd_data_enable_to_write();
+ PORTA=((x<<4)&0xf0); //lower 4 bit
+  e0:	90 e0       	ldi	r25, 0x00	; 0
+  e2:	54 e0       	ldi	r21, 0x04	; 4
+  e4:	88 0f       	add	r24, r24
+  e6:	99 1f       	adc	r25, r25
+  e8:	5a 95       	dec	r21
+  ea:	e1 f7       	brne	.-8      	; 0xe4 <lcd_data+0x1c>
+  ec:	8b bb       	out	0x1b, r24	; 27
+ lcd_data_enable_to_write();
+}
+void lcd_data_enable_to_write()
+{
+ PORTA=PORTA |(1<<0);//RS=0;
+  ee:	d8 9a       	sbi	0x1b, 0	; 27
+ PORTA=PORTA&~(1<<1);//RW=0;
+  f0:	d9 98       	cbi	0x1b, 1	; 27
+ PORTA=PORTA |(1<<2);//EN=1;
+  f2:	da 9a       	sbi	0x1b, 2	; 27
+ PORTA=PORTA&~(1<<2);//EN=0;
+  f4:	da 98       	cbi	0x1b, 2	; 27
+  f6:	c9 01       	movw	r24, r18
+  f8:	01 97       	sbiw	r24, 0x01	; 1
+  fa:	f1 f7       	brne	.-4      	; 0xf8 <lcd_data+0x30>
+{
+ PORTA=(x&0xf0);  //upper 4 bit
+ lcd_data_enable_to_write();
+ PORTA=((x<<4)&0xf0); //lower 4 bit
+ lcd_data_enable_to_write();
+}
+  fc:	08 95       	ret
+
+000000fe <rx>:
+return 0;
+}
+
+void rx()
+{
+ while( (UCSRA &(1<<RXC))==0);
+  fe:	5f 9b       	sbis	0x0b, 7	; 11
+ 100:	fe cf       	rjmp	.-4      	; 0xfe <rx>
+ lcd_data(UDR);
+ 102:	8c b1       	in	r24, 0x0c	; 12
+ 104:	0e 94 64 00 	call	0xc8	; 0xc8 <lcd_data>
+}
+ 108:	08 95       	ret
+
+0000010a <main>:
+void lcd_data_enable_to_write();
+void lcd_command_enable_to_write();
+void lcd_data(char );
+int main()
+{
+ lcd_init();
+ 10a:	0e 94 58 00 	call	0xb0	; 0xb0 <lcd_init>
+ while( (UCSRA &(1<<RXC))==0);
+ lcd_data(UDR);
+}
+void uart_init()
+{
+ UBRRL=0x33;//Fosc=8Mhz,BR=9600
+ 10e:	83 e3       	ldi	r24, 0x33	; 51
+ 110:	89 b9       	out	0x09, r24	; 9
+ UCSRB=UCSRB|(1<<RXEN);
+ 112:	54 9a       	sbi	0x0a, 4	; 10
+ UCSRC=UCSRC|(1<<URSEL)|(1<<UCSZ0)|(1<<UCSZ1);
+ 114:	80 b5       	in	r24, 0x20	; 32
+ 116:	86 68       	ori	r24, 0x86	; 134
+ 118:	80 bd       	out	0x20, r24	; 32
+{
+ lcd_init();
+ uart_init();
+ while(1)
+ {
+  rx();
+ 11a:	0e 94 7f 00 	call	0xfe	; 0xfe <rx>
+ 11e:	fd cf       	rjmp	.-6      	; 0x11a <main+0x10>
+
+00000120 <lcd_data_enable_to_write>:
+ PORTA=((x<<4)&0xf0); //lower 4 bit
+ lcd_data_enable_to_write();
+}
+void lcd_data_enable_to_write()
+{
+ PORTA=PORTA |(1<<0);//RS=0;
+ 120:	d8 9a       	sbi	0x1b, 0	; 27
+ PORTA=PORTA&~(1<<1);//RW=0;
+ 122:	d9 98       	cbi	0x1b, 1	; 27
+ PORTA=PORTA |(1<<2);//EN=1;
+ 124:	da 9a       	sbi	0x1b, 2	; 27
+ PORTA=PORTA&~(1<<2);//EN=0;
+ 126:	da 98       	cbi	0x1b, 2	; 27
+ 128:	80 ed       	ldi	r24, 0xD0	; 208
+ 12a:	97 e0       	ldi	r25, 0x07	; 7
+ 12c:	01 97       	sbiw	r24, 0x01	; 1
+ 12e:	f1 f7       	brne	.-4      	; 0x12c <lcd_data_enable_to_write+0xc>
+ _delay_ms(1);
+}
+ 130:	08 95       	ret
+
+00000132 <lcd_command_enable_to_write>:
+
+void lcd_command_enable_to_write()
+{
+ PORTA=PORTA&~(1<<0);//RS=0;
+ 132:	d8 98       	cbi	0x1b, 0	; 27
+ PORTA=PORTA&~(1<<1);//RW=0;
+ 134:	d9 98       	cbi	0x1b, 1	; 27
+ PORTA=PORTA |(1<<2);//EN=1;
+ 136:	da 9a       	sbi	0x1b, 2	; 27
+ PORTA=PORTA&~(1<<2);//EN=0;
+ 138:	da 98       	cbi	0x1b, 2	; 27
+ 13a:	80 ed       	ldi	r24, 0xD0	; 208
+ 13c:	97 e0       	ldi	r25, 0x07	; 7
+ 13e:	01 97       	sbiw	r24, 0x01	; 1
+ 140:	f1 f7       	brne	.-4      	; 0x13e <lcd_command_enable_to_write+0xc>
+ _delay_ms(1);
+}
+ 142:	08 95       	ret
+
+00000144 <_exit>:
+ 144:	f8 94       	cli
+
+00000146 <__stop_program>:
+ 146:	ff cf       	rjmp	.-2      	; 0x146 <__stop_program>

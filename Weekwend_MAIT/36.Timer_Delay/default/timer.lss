@@ -1,0 +1,157 @@
+
+timer.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000b2  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .debug_aranges 00000020  00000000  00000000  00000106  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  2 .debug_pubnames 00000025  00000000  00000000  00000126  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_info   000000b2  00000000  00000000  0000014b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_abbrev 0000007d  00000000  00000000  000001fd  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_line   000000ef  00000000  00000000  0000027a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_frame  00000030  00000000  00000000  0000036c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_str    00000098  00000000  00000000  0000039c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_ranges 00000018  00000000  00000000  00000434  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d4 e0       	ldi	r29, 0x04	; 4
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 36 00 	call	0x6c	; 0x6c <main>
+  64:	0c 94 57 00 	jmp	0xae	; 0xae <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <main>:
+#define F_CPU 1000000UL
+#include<avr/io.h>
+void delay(void);
+int main()
+{
+  DDRA=DDRA|(1<<PA0);
+  6c:	d0 9a       	sbi	0x1a, 0	; 26
+
+  }
+}
+void delay()
+{
+  TCNT0=246;
+  6e:	26 ef       	ldi	r18, 0xF6	; 246
+  TCCR0=0x01;
+  70:	91 e0       	ldi	r25, 0x01	; 1
+int main()
+{
+  DDRA=DDRA|(1<<PA0);
+  while(1)
+  {
+    PORTA=PORTA|(1<<0);
+  72:	d8 9a       	sbi	0x1b, 0	; 27
+
+  }
+}
+void delay()
+{
+  TCNT0=246;
+  74:	22 bf       	out	0x32, r18	; 50
+  TCCR0=0x01;
+  76:	93 bf       	out	0x33, r25	; 51
+  while((TIFR&(1<<TOV0))==0);//wait here
+  78:	08 b6       	in	r0, 0x38	; 56
+  7a:	00 fe       	sbrs	r0, 0
+  7c:	fd cf       	rjmp	.-6      	; 0x78 <main+0xc>
+  TIFR=TIFR | (1<<TOV0);//cle flag by writing 1 on it
+  7e:	88 b7       	in	r24, 0x38	; 56
+  80:	81 60       	ori	r24, 0x01	; 1
+  82:	88 bf       	out	0x38, r24	; 56
+  DDRA=DDRA|(1<<PA0);
+  while(1)
+  {
+    PORTA=PORTA|(1<<0);
+	delay();
+	PORTA=PORTA&~(1<<0);
+  84:	d8 98       	cbi	0x1b, 0	; 27
+
+  }
+}
+void delay()
+{
+  TCNT0=246;
+  86:	22 bf       	out	0x32, r18	; 50
+  TCCR0=0x01;
+  88:	93 bf       	out	0x33, r25	; 51
+  while((TIFR&(1<<TOV0))==0);//wait here
+  8a:	08 b6       	in	r0, 0x38	; 56
+  8c:	00 fe       	sbrs	r0, 0
+  8e:	fd cf       	rjmp	.-6      	; 0x8a <main+0x1e>
+  TIFR=TIFR | (1<<TOV0);//cle flag by writing 1 on it
+  90:	88 b7       	in	r24, 0x38	; 56
+  92:	81 60       	ori	r24, 0x01	; 1
+  94:	88 bf       	out	0x38, r24	; 56
+  96:	ed cf       	rjmp	.-38     	; 0x72 <main+0x6>
+
+00000098 <delay>:
+
+  }
+}
+void delay()
+{
+  TCNT0=246;
+  98:	86 ef       	ldi	r24, 0xF6	; 246
+  9a:	82 bf       	out	0x32, r24	; 50
+  TCCR0=0x01;
+  9c:	81 e0       	ldi	r24, 0x01	; 1
+  9e:	83 bf       	out	0x33, r24	; 51
+  while((TIFR&(1<<TOV0))==0);//wait here
+  a0:	08 b6       	in	r0, 0x38	; 56
+  a2:	00 fe       	sbrs	r0, 0
+  a4:	fd cf       	rjmp	.-6      	; 0xa0 <delay+0x8>
+  TIFR=TIFR | (1<<TOV0);//cle flag by writing 1 on it
+  a6:	88 b7       	in	r24, 0x38	; 56
+  a8:	81 60       	ori	r24, 0x01	; 1
+  aa:	88 bf       	out	0x38, r24	; 56
+}
+  ac:	08 95       	ret
+
+000000ae <_exit>:
+  ae:	f8 94       	cli
+
+000000b0 <__stop_program>:
+  b0:	ff cf       	rjmp	.-2      	; 0xb0 <__stop_program>
